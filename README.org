@@ -1,0 +1,130 @@
+#+title: Notes
+
+#+begin_src emacs-lisp
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 3.0))
+#+end_src
+
+* =Euclid's Algorithm=, the =Fundamental Arithmetic Theorem= and the =Decimal Number System=
+
+\begin{equation}
+\begin{aligned}
+\forall(x\,,y), \exists(t,r) \, \ni \, y = x*t + r
+\end{aligned}
+\end{equation}
+** Animation - group of dots
+*** Create =n= dots
+Given a number, create =n= dots, by using the greatest value, by one of the relative primes, which compose =n=.
+
+#+begin_src python :session localhost :results both
+def create_n_dots(n, **kwargs):
+    factors_map = factorint(n)
+    factors = list(factors_map.keys())
+    factors_values = [factor ** factors_map[factor] for factor in factors]
+    if len(factors) >= 2:
+        max_factor_value = int(max(factors_values))
+        rest_factors = int(n / max_factor_value)
+    else:
+        if list(factors_map.values())[0] % 2 == 0:
+            max_factor_value = int(factors[0] ** (factors_map[factors[0]] / 2))
+            rest_factors = int(n / max_factor_value)
+        else:
+            max_factor_value = int(factors[0] ** math.ceil(factors_map[factors[0]] / 2))
+            rest_factors = int(n / max_factor_value)
+
+    return create_dots(max_factor_value, rest_factors, **kwargs)
+#+end_src
+
+*** Create dots
+Given a number $p=n.m$, This function creates $n.m$ (2D-display) dots, in a =VGroup=.
+
+#+begin_src python :session localhost :results both
+def create_dots(n, m, *args, **kwargs):
+    color = kwargs["color"]
+    all_dots = VGroup()
+
+    if args:
+        print(args)
+        print(args[0])
+        x_plus = args[0]
+        j = math.floor(x_plus / n)
+        remainder = x_plus % n
+        all_dots = (
+            create_dots(n, m, color=color)
+            .add(create_dots(n, j, color=GREEN).shift([n + 1, 0, 0]))
+            .add(create_dots(1, remainder, color=YELLOW_A).shift([m + j, 0, 0]))
+            .shift([-(m + m / j), 0, 0])
+        )
+
+        return all_dots
+
+    else:
+        for i in range(n):
+            dots = VGroup()
+            for j in range(m):
+                dots.add(Dot([j, i, 0], color=color))
+                all_dots.add(dots)
+
+        return all_dots
+#+end_src
+** Create Rounding Boxes
+*** Create rounding box around =vgroups=
+#+begin_src python :session localhost :results both
+def create_rouding_boxes(vgroups, *args, **kwargs):
+    """VGroups"""
+    color = kwargs["config"]["color"]
+    text = kwargs["config"]["text"]
+
+    if kwargs["config"].keys().__contains__("buff"):
+        buff = kwargs["config"]["buff"]
+    else:
+        buff = 0.1
+
+    boxes = VGroup()
+    if args:
+        n = len(list(vgroups))
+        m = len(list(vgroups[0]))
+        new_text = Text(f"N = {n}*{m}", font_size=24).to_edge(UP).set_color(YELLOW)
+        for j in range(m):
+            box = VGroup()
+            for i in range(n):
+                box.add(vgroups[i][j])
+                boxes.add(SurroundingRectangle(box, buff=buff, color=color))
+        return boxes, new_text
+
+    else:
+        n = len(list(vgroups))
+        m = len(list(vgroups[0]))
+        new_text = Text(f"N = {m}*{n}", font_size=24).to_edge(UP).set_color(YELLOW)
+        for vgroup in vgroups:
+            boxes.add(SurroundingRectangle(vgroup, buff=buff, color=color))
+        return boxes, new_text
+#+end_src
+*** Further decompose the rounding boxes
+
+#+begin_src python :session localhost :results both
+def create_rouding_boxes_decomposition(vgroups, *args, **kwargs):
+    color = kwargs["config"]["color"]
+    text = kwargs["config"]["text"]
+    boxes = VGroup()
+    n = len(list(vgroups))
+    m = len(list(vgroups[0]))
+
+    factorsm = factorint(m)
+    factor1 = list(factorsm.keys())[0]
+    p = int(m / factor1)
+
+    new_text = (
+        Text(f"N = ({factor1}*{p})*{n}", font_size=24).to_edge(UP).set_color(YELLOW)
+    )
+
+    for i in range(n):
+        box = VGroup()
+        for j in range(m):
+            if (j + 1) % p == 0:
+                box.add(vgroups[i][j])
+                boxes.add(SurroundingRectangle(box, buff=0.1, color=color))
+                box = VGroup()
+            else:
+                box.add(vgroups[i][j])
+    return boxes, new_text
+#+end_src

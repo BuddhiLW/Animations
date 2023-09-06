@@ -39,7 +39,6 @@ def create_dots(n, m, *args, **kwargs):
 
 def create_rouding_boxes(vgroups, *args, **kwargs):
     """VGroups"""
-    print(kwargs)
     color = kwargs["config"]["color"]
     text = kwargs["config"]["text"]
 
@@ -47,15 +46,6 @@ def create_rouding_boxes(vgroups, *args, **kwargs):
         buff = kwargs["config"]["buff"]
     else:
         buff = 0.1
-
-    print(kwargs["config"].keys())
-    print(kwargs["config"].keys().__contains__("buff"))
-    print("buff size: ", buff)
-
-    if kwargs["config"].keys().__contains__("scale"):
-        scale = kwargs["config"]["scale"]
-    else:
-        scale = 1
 
     boxes = VGroup()
     if args:
