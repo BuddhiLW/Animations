@@ -1,0 +1,34 @@
+#+title: Notes
+
+#+begin_src emacs-lisp
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 3.0))
+#+end_src
+
+#+RESULTS:
+| :foreground | default | :background | default | :scale | 3.0 | :html-foreground | Black | :html-background | Transparent | :html-scale | 1.0 | :matchers | (begin $1 $ $$ \( \[) |
+
+* =Euclid's Algorithm= and the =Decimal Number System=
+
+\begin{equation}
+\begin{aligned}
+\forall(x\,,y), \exists(t,r) \, \ni \, y = x*t + r
+\end{aligned}
+\end{equation}
+
+** Animation - group of dots
+
+These dots represents values that will be distributed to other boxes.
+
+#+begin_src python :session localhost :results both
+from manim import *
+
+class MovingGroupToDestination(Scene):
+    def construct(self):
+        group = VGroup(Dot(LEFT), Dot(ORIGIN), Dot(RIGHT, color=RED), Dot(2 * RIGHT)).scale(1.4)
+        dest = Dot([4, 3, 0], color=YELLOW)
+        self.add(group, dest)
+        self.play(group.animate.shift(dest.get_center() - group[2].get_center()))
+        self.wait(0.5)
+#+end_src
+
+#+RESULTS:
