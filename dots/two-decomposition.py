@@ -1,6 +1,7 @@
 from manim import *
 import math
 from sympy.ntheory import factorint
+from itertools import chain
 
 # from manim_voiceover import VoiceoverScene
 
@@ -9,12 +10,10 @@ from sympy.ntheory import factorint
 
 
 def create_dots(n, m, *args, **kwargs):
-    color = kwargs["color"]
+    color = kwargs["config"]["color"]
     all_dots = VGroup()
 
     if args:
-        print(args)
-        print(args[0])
         x_plus = args[0]
         j = math.floor(x_plus / n)
         remainder = x_plus % n
@@ -96,7 +95,6 @@ def create_rouding_boxes_decomposition(vgroups, *args, **kwargs):
 
 
 def create_n_dots(n, **kwargs):
-    print(kwargs)
     factors_map = factorint(n)
     factors = list(factors_map.keys())
     factors_values = [factor ** factors_map[factor] for factor in factors]
@@ -252,38 +250,59 @@ def create_n_dots_1D(n, **kwargs):
 
 
 def box_decomposition_n_1D(vgroups, *args, **kwargs):
-    color = GREEN
-    buff = 0.1
-    # color = kwargs["config"]["color"]
-    # text = kwargs["config"]["text"]
-    # buff = kwargs["config"]["buff"]
-    # boxes = VGroup()
+    if kwargs["config"].keys().__contains__("buff"):
+        buff = kwargs["config"]["buff"]
+    else:
+        buff = 0.25
+
+    if kwargs["config"].keys().__contains__("color"):
+        color = kwargs["config"]["color"]
+    else:
+        color = color = interpolate_color(RED, BLUE, 0)
+
+    if kwargs["config"].keys().__contains__("level"):
+        level = kwargs["config"]["level"]
+        color = interpolate_color(color, BLUE, level / 10)
+        level += 1
+    else:
+        level = 1
+
     n = len(list(vgroups))
     factorsn = factorint(n)
     total = sum(factorsn.values())
-    print("factorsn: ", factorsn)
+
+    if kwargs["config"].keys().__contains__("grad_buff"):
+        grad_buff = kwargs["config"]["grad_buff"]
+    else:
+        grad_buff = (buff - 0.1) / total
 
     if args:
-        print("args: ", args)
         decompositions = args[0]
     else:
         decompositions = []
 
     if total == 1 or factorsn == {}:
         print("total: ", total)
-        decompositions.append(SurroundingRectangle(vgroups, buff=buff, color=color))
+        # decompositions.append(SurroundingRectangle(vgroups, buff=buff, color=color))
+        # decompositions.append(SurroundingRectangle(vgroups, buff=buff, color=color))
     else:
         factor = list(factorsn.keys())[0]
         factorand = int(n / factor)
         # sub_vgroups = map(lambda i: vgroups[i*factorand:(i+1)],range(factor))
         for i in range(factor):
-            # for j in range(factorand):
             sub_vgroup = vgroups[i * factorand : (i + 1) * factorand]
-            print("sub_vgroup: ", sub_vgroup)
             decompositions.append(
-                SurroundingRectangle(sub_vgroup, buff=buff, color=color)
+                SurroundingRectangle(
+                    sub_vgroup,
+                    buff=(buff - grad_buff),
+                    color=color,
+                )
             )
-            box_decomposition_n_1D(sub_vgroup, decompositions)  # , config=kwargs)
+            box_decomposition_n_1D(
+                sub_vgroup,
+                decompositions,
+                config={"grad_buff": grad_buff, "level": level},
+            )  # , config=kwargs)
     return decompositions
 
 
@@ -311,11 +330,56 @@ class Decompose_1D(Scene):
         boxes = box_decomposition_n_1D(all_dots)
         self.play(Create(all_dots))
         self.play(Create(VGroup(*boxes)))
-        # for box in boxes:
-        #     self.play(Create(box))
         self.wait(2)
 
 
-Decompose_1D().render()
+def box_decomposition_n_2D(vgroups, *args, **kwargs):
+    print("kwargs: ", kwargs)
+    if kwargs["config"].keys().__contains__("color"):
+        color = kwargs["config"]["color"]
+    else:
+        color = GREEN
+
+    if kwargs["config"].keys().__contains__("buff"):
+        buff = kwargs["config"]["buff"]
+    else:
+        buff = 0.2
+
+    boxes = []
+
+    # boxes.append(
+    #     box_decomposition_n_1D(vgroups, config={"color": color, "buff": buff * 1.1})
+    # )
+
+    for vgroup in vgroups.submobjects:
+        boxes.append(
+            box_decomposition_n_1D(vgroup, config={"color": RED, "buff": buff * 0.3})
+        )
+
+    return boxes
+
+
+class Decompose_2D(Scene):
+    def construct(self):
+        n = 3 * 5 * 7
+        all_dots = create_n_dots(n, config={"color": BLUE}).scale(0.7).center()
+        boxes = box_decomposition_n_2D(all_dots, config={"buff": 0.25})
+        flatten_boxes = list(chain(*boxes))
+        self.play(Create(all_dots))
+        for i in range(0, len(boxes)):
+            self.play(Create(VGroup(*list(chain(*boxes[i : i + 1])))))
+            self.play(
+                Create(
+                    SurroundingRectangle(
+                        VGroup(*list(chain(*boxes[i : i + 1]))), buff=0.15, color=GREEN
+                    )
+                )
+            )
+
+        self.wait(2)
+
+
+Decompose_2D().render()
+# Decompose_1D().render()
 # Decompose().render()
 # TwoDDots().render()
