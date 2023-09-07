@@ -215,12 +215,107 @@ class TwoDDots(Scene):
         self.wait(4)
 
 
+def box_decomposition_n(vgroups, *args, **kwargs):
+    color = kwargs["config"]["color"]
+    text = kwargs["config"]["text"]
+    buff = kwargs["config"]["buff"]
+    boxes = VGroup()
+    n = len(list(vgroups))
+    m = len(list(vgroups[0]))
+
+    factorsm = factorint(m)
+    factorsn = factorint(n)
+
+    # factor1 = list(factorsm.keys())[0]
+    # p = int(m / factor1)
+
+    new_text = Text(f"N = {n}*{m}", font_size=24).to_edge(UP).set_color(YELLOW)
+
+    for i in range(n):
+        box = VGroup()
+        for j in range(m):
+            if (j + 1) % m == 0:
+                box.add(vgroups[i][j])
+                boxes.add(SurroundingRectangle(box, buff=buff, color=color))
+                box = VGroup()
+            else:
+                box.add(vgroups[i][j])
+    return boxes, new_text
+
+
+def create_n_dots_1D(n, **kwargs):
+    color = kwargs["config"]["color"]
+    all_dots = VGroup()
+    for i in range(n):
+        all_dots.add(Dot([i, 0, 0], color=color))
+    return all_dots
+
+
+def box_decomposition_n_1D(vgroups, *args, **kwargs):
+    color = GREEN
+    buff = 0.1
+    # color = kwargs["config"]["color"]
+    # text = kwargs["config"]["text"]
+    # buff = kwargs["config"]["buff"]
+    # boxes = VGroup()
+    n = len(list(vgroups))
+    factorsn = factorint(n)
+    total = sum(factorsn.values())
+    print("factorsn: ", factorsn)
+
+    if args:
+        print("args: ", args)
+        decompositions = args[0]
+    else:
+        decompositions = []
+
+    if total == 1 or factorsn == {}:
+        print("total: ", total)
+        decompositions.append(SurroundingRectangle(vgroups, buff=buff, color=color))
+    else:
+        factor = list(factorsn.keys())[0]
+        factorand = int(n / factor)
+        # sub_vgroups = map(lambda i: vgroups[i*factorand:(i+1)],range(factor))
+        for i in range(factor):
+            # for j in range(factorand):
+            sub_vgroup = vgroups[i * factorand : (i + 1) * factorand]
+            print("sub_vgroup: ", sub_vgroup)
+            decompositions.append(
+                SurroundingRectangle(sub_vgroup, buff=buff, color=color)
+            )
+            box_decomposition_n_1D(sub_vgroup, decompositions)  # , config=kwargs)
+    return decompositions
+
+
 class Decompose(Scene):
     def construct(self):
-        n = 2**3 * 3**2
-        all_dots = create_dots(3**2, 2**3, color=BLUE).center()
+        n = 2**2 * 3**2
+        all_dots = create_n_dots(n, color=BLUE).scale(0.6).center()
         text = Text(f"N = {n}", font_size=24).to_edge(UP).set_color(YELLOW)
-        framebox0 = SurroundingRectangle(all_dots, buff=0.1)
+        framebox0 = SurroundingRectangle(all_dots, buff=0.4)
+        self.play(Create(all_dots), Create(text))
+        self.play(Create(framebox0))
+        self.wait(1)
+        boxes, text1 = box_decomposition_n(
+            all_dots, config={"color": GREEN, "text": text, "buff": 0.2}
+        )
+
+        self.play(Create(boxes), Transform(text, text1))
+        self.wait(2)
 
 
+class Decompose_1D(Scene):
+    def construct(self):
+        n = 3 * 2**2
+        all_dots = create_n_dots_1D(n, config={"color": BLUE}).scale(0.4).center()
+        boxes = box_decomposition_n_1D(all_dots)
+        self.play(Create(all_dots))
+        self.play(Create(VGroup(*boxes)))
+        # for box in boxes:
+        #     self.play(Create(box))
+        self.wait(2)
+
+
+Decompose_1D().render()
+# Decompose().render()
 # TwoDDots().render()
