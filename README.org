@@ -4,7 +4,10 @@
 (setq org-format-latex-options (plist-put org-format-latex-options :scale 3.0))
 #+end_src
 
-* =Euclid's Algorithm=, the =Fundamental Arithmetic Theorem= and the =Decimal Number System=
+* Integrals and the Monte Carlo Method
+* TODO IFS
+* TODO Compound Interest and calculation of yearly, monthly and daily returns
+* TODO =Euclid's Algorithm=, the =Fundamental Arithmetic Theorem= and the =Decimal Number System=
 
 \begin{equation}
 \begin{aligned}
