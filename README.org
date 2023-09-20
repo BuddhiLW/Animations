@@ -5,6 +5,7 @@
 #+end_src
 
 * Table of Contents
+  - [[Table of Contents][Table of Contents]]
   - [[Installation][Installation]]
     - [[Instructions][Instructions]]
       - [[Create an environment with =Conda=][Create an environment with =Conda=]]
@@ -23,7 +24,6 @@
       - [[Create Rounding Boxes][Create Rounding Boxes]]
         - [[Create rounding box around =vgroups=][Create rounding box around =vgroups=]]
         - [[Further decompose the rounding boxes][Further decompose the rounding boxes]]
-
 
 * Installation
 Instructions on creating, activating and download the dependencies will be given in =Instructions=
