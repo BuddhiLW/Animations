@@ -4,18 +4,60 @@
 (setq org-format-latex-options (plist-put org-format-latex-options :scale 3.0))
 #+end_src
 
-* Integrals and the Monte Carlo Method
-* TODO IFS
-* TODO Compound Interest and calculation of yearly, monthly and daily returns
-* TODO =Euclid's Algorithm=, the =Fundamental Arithmetic Theorem= and the =Decimal Number System=
+* Installation
+Instructions on creating, activating and download the dependencies will be given in =Instructions=
+
+Prerequisites:
+- Conda
+- Manim
+- Numpy
+- Scipy
+** Instructions
+*** Create an environment with =Conda=
+Let's create an environment, which we will call =manim=, but you can call it whatever you fell like.
+
+#+begin_src shell
+conda create -n manim python=3.11 anaconda
+#+end_src
+*** Activate the environment
+In a terminal (for installing the dependencies), or (later on) in your favorite editor, activate the environment.
+
+#+begin_src shell
+conda activate manim
+#+end_src
+**** Emacs
+In Emacs, you can use =M-x conda-env-activate=, using =conda.el= ([[https://github.com/necaris/conda.el][repository for conda.el]])
+
+Then, upon calling =run-python=, the python =repl= will be using conda's environment.
+
+Anything you sent to it, will contain the packages you installed (like manim). So, you can import it and run the animations.
+*** Install dependencies
+After activating the environment,
+
+#+begin_src shell
+conda install -c conda-forge manim numpy scipy
+#+end_src
+** Summary
+
+#+begin_src shell
+conda create -n manim
+conda activate manim
+conda install -c conda-forge manim numpy scipy
+#+end_src
+
+* STRT Algorithm documentation
+** Integrals and the Monte Carlo Method
+** TODO IFS
+** TODO Compound Interest and calculation of yearly, monthly and daily returns
+** TODO =Euclid's Algorithm=, the =Fundamental Arithmetic Theorem= and the =Decimal Number System=
 
 \begin{equation}
 \begin{aligned}
 \forall(x\,,y), \exists(t,r) \, \ni \, y = x*t + r
 \end{aligned}
 \end{equation}
-** Animation - group of dots
-*** Create =n= dots
+*** Animation - group of dots
+**** Create =n= dots
 Given a number, create =n= dots, by using the greatest value, by one of the relative primes, which compose =n=.
 
 #+begin_src python :session localhost :results both
@@ -37,7 +79,7 @@ def create_n_dots(n, **kwargs):
     return create_dots(max_factor_value, rest_factors, **kwargs)
 #+end_src
 
-*** Create dots
+**** Create dots
 Given a number $p=n.m$, This function creates $n.m$ (2D-display) dots, in a =VGroup=.
 
 #+begin_src python :session localhost :results both
@@ -69,8 +111,8 @@ def create_dots(n, m, *args, **kwargs):
 
         return all_dots
 #+end_src
-** Create Rounding Boxes
-*** Create rounding box around =vgroups=
+*** Create Rounding Boxes
+**** Create rounding box around =vgroups=
 #+begin_src python :session localhost :results both
 def create_rouding_boxes(vgroups, *args, **kwargs):
     """VGroups"""
@@ -102,7 +144,7 @@ def create_rouding_boxes(vgroups, *args, **kwargs):
             boxes.add(SurroundingRectangle(vgroup, buff=buff, color=color))
         return boxes, new_text
 #+end_src
-*** Further decompose the rounding boxes
+**** Further decompose the rounding boxes
 
 #+begin_src python :session localhost :results both
 def create_rouding_boxes_decomposition(vgroups, *args, **kwargs):
