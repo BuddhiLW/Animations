@@ -4,6 +4,27 @@
 (setq org-format-latex-options (plist-put org-format-latex-options :scale 3.0))
 #+end_src
 
+* Table of Contents
+  - [[Installation][Installation]]
+    - [[Instructions][Instructions]]
+      - [[Create an environment with =Conda=][Create an environment with =Conda=]]
+      - [[Activate the environment][Activate the environment]]
+        - [[Emacs][Emacs]]
+      - [[Install dependencies][Install dependencies]]
+    - [[Summary][Summary]]
+  - [[Algorithm documentation (TODO)][Algorithm documentation (TODO)]]
+    - [[Integrals and the Monte Carlo Method][Integrals and the Monte Carlo Method]]
+    - [[IFS][IFS]]
+    - [[Compound Interest and calculation of yearly, monthly and daily returns][Compound Interest and calculation of yearly, monthly and daily returns]]
+    - [[=Euclid's Algorithm=, the =Fundamental Arithmetic Theorem= and the =Decimal Number System=][=Euclid's Algorithm=, the =Fundamental Arithmetic Theorem= and the =Decimal Number System=]]
+      - [[Animation - group of dots][Animation - group of dots]]
+        - [[Create =n= dots][Create =n= dots]]
+        - [[Create dots][Create dots]]
+      - [[Create Rounding Boxes][Create Rounding Boxes]]
+        - [[Create rounding box around =vgroups=][Create rounding box around =vgroups=]]
+        - [[Further decompose the rounding boxes][Further decompose the rounding boxes]]
+
+
 * Installation
 Instructions on creating, activating and download the dependencies will be given in =Instructions=
 
@@ -45,7 +66,7 @@ conda activate manim
 conda install -c conda-forge manim numpy scipy
 #+end_src
 
-* STRT Algorithm documentation
+* TODO Algorithm documentation (TODO)
 ** Integrals and the Monte Carlo Method
 ** TODO IFS
 ** TODO Compound Interest and calculation of yearly, monthly and daily returns
